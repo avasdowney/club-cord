@@ -98,6 +98,11 @@ async def on_message(message):
 			print("====================================================================")
 
 		"""
+
+	# add your commands to this function after fully implemented
+	# also add your commmand and function to the readme.md file
+	if message.content.startswith("$help"):
+		await message.channel.send('$help, $hello, $channels, $users, $channelmessage')
 	
 			
 
