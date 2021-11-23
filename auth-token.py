@@ -2,6 +2,7 @@ import discord
 from pprint import pprint
 from message import MessageMiner
 import random
+from discord.utils import get
 
 try:
 	import ConfigParser
@@ -36,6 +37,12 @@ def view_users():
 	
 	return user_list 
 
+def view_roles():
+	roles_list = [] 
+	for role in client.roles:
+		roles_list.append(role)
+	
+	return roles_list 
 
 @client.event
 async def view_messages_by_channel(channel):
@@ -43,15 +50,6 @@ async def view_messages_by_channel(channel):
 	for message in messages:
 		#print(message.id)
 		await channel.fetch_message(message.id)
-			
-
-def view_users():
-	user_list = [] 
-	for user in client.users:
-		user_list.append(user)
-	
-	return user_list 
-
 
 @client.event
 async def on_ready():
@@ -78,6 +76,11 @@ async def on_message(message):
 		for item in results:
 			print(item.name)
 	
+	if message.content.startswith("$roles"):
+		roles = view_roles()
+		for item in roles:
+			print(item)
+			
 	if message.content.startswith("$cheer"):
 		cheerymessage = ["You got this!", "Good job!", "Keep it up!", "You can accomplish all your goals", "If you put your mind to something, you can do it", "You're doing the best you can"]
 		print(random.choice(cheerymessage))
