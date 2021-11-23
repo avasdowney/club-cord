@@ -1,6 +1,7 @@
 import discord
 from pprint import pprint
 from message import MessageMiner
+import random
 
 try:
 	import ConfigParser
@@ -77,6 +78,10 @@ async def on_message(message):
 		for item in results:
 			print(item.name)
 	
+	if message.content.startswith("$cheer"):
+		cheerymessage = ["You got this!", "Good job!", "Keep it up!", "You can accomplish all your goals", "If you put your mind to something, you can do it", "You're doing the best you can"]
+		print(random.choice(cheerymessage))
+			
 	if message.content.startswith("$channelmessage"):
 		messages = await client.get_channel(746034736660480030).history(limit=500).flatten()
 
