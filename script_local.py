@@ -3,11 +3,10 @@ Connects to the Reddit API to get rising submissions details and posts
 them to a Discord webhook.
 """
 
-import os
 import requests
 
 
-WEBHOOK_URL = os.environ["WEBHOOK"]
+WEBHOOK_URL = "https://discord.com/api/webhooks/920732597682835506/mG6HfW1_Dohy77AXKzVHZS45T41mFfQXq4LkLsJi9SB1eB8826iL2Qlp7Vlv_A2wGQF0"
 
 
 def main():
@@ -23,6 +22,7 @@ def main():
 def get_rising_submissions(subreddit):
     """Connects to the Reddit API and queries the top rising submission
     from the specified subreddit.
+    
     Parameters
     ----------
     subreddit : str
@@ -31,9 +31,10 @@ def get_rising_submissions(subreddit):
     -------
     tuple
         A tuple containing a formatted message and an image url.
+    
     """
 
-    url = f"https://www.reddit.com/r/{subreddit}/rising.json?limit=1"
+    url = f"https://www.reddit.com/r/cybersecurity/rising.json?limit=1"
     headers = {"User-Agent": "Reddit Rising Checker v1.0"}
 
     with requests.get(url, headers=headers) as response:
@@ -60,12 +61,14 @@ def get_rising_submissions(subreddit):
 
 def post_message(message, image_url):
     """Sends the formatted message to a Discord server.
+    
     Parameters
     ----------
     message : str
         The formatted message to post.
     image_url : str
         The URL used as the thumbnail.
+    
     """
 
     payload = {
