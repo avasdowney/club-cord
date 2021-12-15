@@ -1,10 +1,10 @@
 name: Discord Webhook
 
 # 'on' is the trigger, in this case this Action will
-# be triggered using cron set at a 10 minutes interval.
+# be triggered using cron set at a day interval.
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/1440 * * * *"
 
 # 'jobs' are the routines, we only have
 # one when the instance is built.
@@ -35,3 +35,8 @@ jobs:
         run: |
           pip install -r requirements.txt
           python script_remote.py
+
+      # get rid of workflow error
+      - uses: actions/checkout@v2
+        with:
+        persist-credentials: false
