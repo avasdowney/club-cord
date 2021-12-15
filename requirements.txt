@@ -1,3 +1,4 @@
 discord
 markdown
 beautifulsoup4
+requests
