@@ -30,6 +30,8 @@ class MessageMiner:
 		#print(y)	
 		plt.figure(figsize=(15, 15))	
 		plt.barh(x,y)
+		plt.xlabel('Number of messages')
+		plt.ylabel('User')
 		plt.savefig('test.png')	
 		
 		
