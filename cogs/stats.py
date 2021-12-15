@@ -10,17 +10,21 @@ import random
 class Stats(commands.Cog):
 
 	"""
-		Stats service: 
-			Information about users, channels and server details
-			Retrieve graphs about server statistics 
+	Stats service: 
+		Service for getting details about users, channels, messages or any discord server related details. 
+		View graphs/data visualizations related to server data
 	"""
 
 	def __init__(self, client):
 		self.client = client
 
-	# this just ranks the users that have sent the most messages in a channel
 	def generate_message_stats(self, messages):
-		# get general chat channel id
+		"""
+		Creates a dictionary using the users as a key, the value is the amount of messages they've sent
+
+		PARAMS
+		messages: List of discord message objects
+		"""
 		message_dict = {}
 		for item in messages:
 			if item.author.name in message_dict:
@@ -31,6 +35,13 @@ class Stats(commands.Cog):
 		return message_dict
 
 	def generate_stats_chart(self, chart_dict):
+		"""
+		Creats a bar chart of all users and the amount of messages that have been sent
+	
+		PARAMS
+		chart_dict: Message dictionary, key value of user and message counts. This can be returned from the generate_message_stats() function above. 
+		
+		"""
 		id_test = random.randint(1, 1000)
 		x = [] 
 		y = [] 
@@ -52,12 +63,25 @@ class Stats(commands.Cog):
 	
 	@commands.command()
 	async def cheer(self, ctx):	
+		"""
+		Randomly selects positive messages from a list an sends it to the server chat. 
+
+		PARAMS
+		ctx: Client wrapper object
+		"""
 		cheerymessage = ["You got this!", "Good job!", "Keep it up!", "You can accomplish all your goals", "If you put your mind to something, you can do it", "You're doing the best you can"]
 		await ctx.send(random.choice(cheerymessage))
 
 	
 	@commands.command()
 	async def channelstats(self, ctx):
+		
+		"""
+		Sends bar chart image of users and message counts 
+
+		PARAMS
+		ctx: Client wrapper object
+		"""
 		messages = await self.client.get_channel(746034736660480030).history(limit=500).flatten()
 		results = self.generate_message_stats(messages)
 		self.generate_stats_chart(results)
@@ -66,6 +90,12 @@ class Stats(commands.Cog):
 
 	@commands.command()
 	async def users(self, ctx):
+		"""
+		Sends list of users in the discord server. Sends it to the #devops channel 
+
+		PARAMS
+		ctx: Client wrapper object
+		"""
 		user_list = [] 
 		for user in self.client.users:
 			user_list.append(user)
@@ -75,7 +105,13 @@ class Stats(commands.Cog):
 
 
 	@commands.command()
-	async def channels(self, ctx):
+	async def channels(self, ctx):	
+		"""
+		Sends list of text channels in the discord server. Sends it to the #devops channel 
+
+		PARAMS
+		ctx: Client wrapper object
+		"""
 		text_channel = []
 		for server in self.client.guilds:
 			for channel in server.channels:
@@ -85,7 +121,13 @@ class Stats(commands.Cog):
 
 
 	@commands.command()
-	async def view_roles(self, ctx):
+	async def view_roles(self, ctx):	
+		"""
+		Sends list of roles in the discord server. Sends it to the #devops channel 
+
+		PARAMS
+		ctx: Client wrapper object
+		"""
 		roles_list = [] 
 		for role in self.client.roles:
 			roles_list.append(role)
@@ -95,6 +137,12 @@ class Stats(commands.Cog):
 
 	@commands.command()
 	async def help_test(self, ctx):
+		"""
+		Reads the README from the github repo and displays it as a message in the discord server. 
+		
+		PARAMS
+		ctx: Client wrapper object
+		"""
 		# read readme.md file
 		with open('README.md', 'r') as f:
 			text = f.read()
