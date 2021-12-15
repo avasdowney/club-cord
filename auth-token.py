@@ -63,39 +63,30 @@ async def on_message(message):
 	if message.author == client.user:
 		return
 
-	# return hello message
 	if message.content.startswith('$hello'):
 		await message.channel.send('Hello!')
 	
-	# return channels
 	if message.content.startswith("$channels"):
 		results = view_channels('text')
-		channel_msg = ''
 		for item in results:
-			channel_msg += "Name: {}, Id: {} \n".format(item.name, item.id)
-		await message.channel.send(channel_msg)
+			#print(type(item))
+			print("Name: {}, Id: {} ".format(item.name, item.id))
 
 	# return all users 
 	if message.content.startswith("$users"):
 		results = view_users()
-		user_msg = ''
 		for item in results:
-			user_msg += '{} \n'.format(item.name)
-		await message.channel.send(user_msg)
+			print(item.name)
 	
-	# BROKEN
-	# return all roles
 	if message.content.startswith("$roles"):
 		roles = view_roles()
 		for item in roles:
-			await message.channel.send(item)
-
-	# return random cheery message	
+			print(item)
+			
 	if message.content.startswith("$cheer"):
 		cheerymessage = ["You got this!", "Good job!", "Keep it up!", "You can accomplish all your goals", "If you put your mind to something, you can do it", "You're doing the best you can"]
-		await message.channel.send(random.choice(cheerymessage))
-
-	# return graph of channel message count		
+		print(random.choice(cheerymessage))
+			
 	if message.content.startswith("$channelmessage"):
 		messages = await client.get_channel(746034736660480030).history(limit=500).flatten()
 
