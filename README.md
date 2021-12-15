@@ -9,6 +9,7 @@ A discord bot to freelance to student organizations that want statistics on thei
 | `$channels` | prints out text channels |
 | `$users` | prints out the people in the discords |
 | `$channelmessage` | displays a graph of how many messages people have posted in the general  channel |
+| `$cheer` | prints out a cheery message |
 
 ## Want to contribute?
 1. Fork the repo and clone locally. You can follow [this guide](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) using [gitbash](https://git-scm.com/downloads) if you do not know how to do so.

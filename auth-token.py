@@ -3,6 +3,8 @@ from pprint import pprint
 from message import MessageMiner
 import random
 from discord.utils import get
+import markdown
+from bs4 import BeautifulSoup
 
 try:
 	import ConfigParser
@@ -107,17 +109,29 @@ async def on_message(message):
 
 		"""
 
-	# add your commands to this function after fully implemented
-	# also add your commmand and function to the readme.md file
+	# pull commands from readme.md file
 	if message.content.startswith("$help"):
-		await message.channel.send('$help, $hello, $channels, $users, $channelmessage')
-	
-			
 
-	
+		# read readme.md file
+		with open('README.md', 'r') as f:
+			text = f.read()
+			html = markdown.markdown(text)
+		soup = BeautifulSoup(html, "html")
 
+		# retrieve useful info
+		readme = soup.find_all('p')
+		readme = (str)(readme.pop(1)) 
+		commands = readme.split('|')[7:][::3]
+		commands = [i.replace('<code>', '**').replace('</code>', '**').strip() for i in commands]
+		explanations = readme.split('|')[8:][::3]
+		explanations = [i.strip() for i in explanations]
 
-
+		# return message in discord chat
+		indices = len(commands)
+		help_msg = ''
+		for x in range(indices):
+			help_msg = help_msg + '{}: {}\n'.format(commands[x], explanations[x])
+		await message.channel.send(help_msg)
 
 # set up auth token
 config = ConfigParser.RawConfigParser()
