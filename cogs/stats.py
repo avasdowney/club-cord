@@ -49,7 +49,13 @@ class Stats(commands.Cog):
 	async def on_ready(self):
 		print("Stats service is online ")
 
+	
+	@commands.command()
+	async def cheer(self, ctx):	
+		cheerymessage = ["You got this!", "Good job!", "Keep it up!", "You can accomplish all your goals", "If you put your mind to something, you can do it", "You're doing the best you can"]
+		await ctx.send(random.choice(cheerymessage))
 
+	
 	@commands.command()
 	async def channelstats(self, ctx):
 		messages = await self.client.get_channel(746034736660480030).history(limit=500).flatten()
@@ -90,7 +96,7 @@ class Stats(commands.Cog):
 	@commands.command()
 	async def help_test(self, ctx):
 		# read readme.md file
-		with open('../README.md', 'r') as f:
+		with open('README.md', 'r') as f:
 			text = f.read()
 			html = markdown.markdown(text)
 		soup = BeautifulSoup(html, "html")
