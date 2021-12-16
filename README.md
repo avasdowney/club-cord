@@ -1,6 +1,25 @@
 # club-cord
 A discord bot to freelance to student organizations that want statistics on their discord servers. 
 
+## Getting started
+Start by creating a file called "credentials.conf" and paste in the following. You can retrieve the bot token by asking an E-board member or contact shsingh@hartford.edu. 
+
+```
+
+[clubcord]
+
+# note -- do not use any quotes...
+
+#
+# api access id - ENTER API ACCESS ID
+#
+bot_token = <TOKEN GOES HERE>
+
+```
+
+Then save the file (MAKE SURE it's called credentials.conf)
+
+
 ## Commands
 | command | what it does |
 |---------|--------------|
