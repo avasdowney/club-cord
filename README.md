@@ -29,6 +29,10 @@ Then save the file (MAKE SURE it's called credentials.conf)
 | `$users` | prints out the people in the discords |
 | `$channelmessage` | displays a graph of how many messages people have posted in the general  channel |
 | `$cheer` | prints out a cheery message |
+| `$audit_log_report` | prints out audit log actions and the 3 most recent actions performed |
+| `$channel_activity_report` | prints out most active channels based on date timeframe |
+| `$port_scan  <HOST> <START_PORT> <END_PORT>` | performs port scan and returns result of open ports |
+
 
 ## Want to contribute?
 1. Fork the repo and clone locally. You can follow [this guide](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) using [gitbash](https://git-scm.com/downloads) if you do not know how to do so.
