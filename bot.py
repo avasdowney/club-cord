@@ -31,7 +31,7 @@ for filename in os.listdir('./cogs'):
 
 # set up auth token using config parser
 config = ConfigParser.RawConfigParser()
-config.read('./token.conf')
+config.read('./credentials.conf')
 
 # grab auth token details from token.conf file
 try:
