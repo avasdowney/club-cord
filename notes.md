@@ -5,18 +5,15 @@ Useful metrics we could add to the stats wrapper
 # General stats
 1. Number of members in the server
 2. Number of members offline/online (Seperate counts)
-	* for the state vector
+	* Use 0 to represent offline, 1 to represent online
 
-# Message stats
-Get a birds eye view of all the messages that are being sent on certain time intervals
-## Tasks
-1. Daily, Weekly and monthly counts for messages in each channel. (Done)
-2. Use the stats to see which channels are dead/need to be deleted
-3. Possible RL implementation with reccomendations to drive membership activity. 
 
 # Audit logging
 Mine audit logging data (View Later)
-1. Create a filter for certain logs (Done)
+1. Create a general report for audit logs (Done)
+2. Filter audit logs by action
+3. Filter audit logs by date/time
+4. Filter audit logs by username/member
 
 # New Members
 Visualize server growth with filtered time frames. 
@@ -25,5 +22,22 @@ Visualize server growth with filtered time frames.
 
 # Channels
 Stats related to channels
-2. Use simple text summarization technique from NLTK to get specific keywords in the channel
-3. Get members that talk the most in that channel
+1. Use simple text summarization technique from NLTK to get specific keywords in the channel
+2. Get members that talk the most in that channel
+
+# Reminder Service
+Service for scheduling meetings/events. 
+
+## Model
+**Name**: Name of meeting/event
+**Time**: Time that the meeting starts
+**Duration**: How long the meeting will be
+**Occurrence Time**: (Weekly, BI-Weekly, Monthly)
+**User**: User that created the reminder
+
+
+1. Create/Read/Update/Delete reminder model
+2. Send message reminder 4 HR's before meeting
+3. Store all info in a sqlite3 database
+4. Have a function that checks the DB everyday and see if a meeting is occuring the day before
+

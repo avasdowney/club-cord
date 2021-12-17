@@ -21,6 +21,11 @@ class Stats(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 
+	
+	@commands.Cog.listener()
+	async def on_ready(self):
+		print("Stats service is online ")
+
 	def generate_message_stats(self, messages):
 		"""
 		Creates a dictionary using the users as a key, the value is the amount of messages they've sent
@@ -55,23 +60,6 @@ class Stats(commands.Cog):
 		plt.figure(figsize=(15, 15))	
 		plt.barh(x,y)
 		plt.savefig('test.png')	
-	
-
-	@commands.Cog.listener()
-	async def on_ready(self):
-		print("Stats service is online ")
-
-	
-	@commands.command()
-	async def cheer(self, ctx):	
-		"""
-		Randomly selects positive messages from a list an sends it to the server chat. 
-
-		PARAMS
-		ctx: Client wrapper object
-		"""
-		cheerymessage = ["You got this!", "Good job!", "Keep it up!", "You can accomplish all your goals", "If you put your mind to something, you can do it", "You're doing the best you can"]
-		await ctx.send(random.choice(cheerymessage))
 
 	
 	@commands.command()
@@ -138,7 +126,8 @@ class Stats(commands.Cog):
 	@commands.command()
 	async def channel_activity_report(self, ctx):	
 		"""
-		Sends list of roles in the discord server. Sends it to the #devops channel 
+		Creates a channel activity report. Shows most active channels based on different messages sent in a certain time frame. 
+		Mesaures the time from first and last message sent between users in a channel. 
 
 		PARAMS
 		ctx: Client wrapper object
@@ -151,14 +140,11 @@ class Stats(commands.Cog):
 				if str(channel.type) == "text":
 					chan = self.client.get_channel(channel.id)
 					messages = await chan.history(limit=20).flatten()
-					first = messages[0]
-					last = messages[len(messages) - 1]
-					#print("Time difference: {} ".format(first.created_at-last.created_at))
-					channel_messages[str(chan.name)] = first.created_at-last.created_at
+					first = messages[0].created_at
+					last = messages[len(messages) - 1].created_at
+					channel_messages[str(chan.name)] = first-last
 
 		results = sorted(channel_messages.items(), key=lambda p: p[1])
-		pprint(results)
-
 		msg = " Message stats for each channel. Contains the name of the channel and the time frame. \nTime frame is the date from the first message sent to the last with a limit of 200+ messages. \n \n LIMIT: 20 \n\n"
 		for r in results:
 			val = "{} : {} \n".format("**" + r[0] + "**", r[1])
@@ -187,10 +173,6 @@ class Stats(commands.Cog):
 				count += 1
 
 		msg = "AUDIT LOG REPORT, count of audit actions done. LIMIT 100\n\n"
-				
-		pprint(action_count)
-
-
 		for item in action_count:
 			msg += "__{}__  : **{}** \n".format(item, action_count[item])
 
@@ -231,6 +213,18 @@ class Stats(commands.Cog):
 			help_msg = help_msg + '{}: {}\n'.format(commands[x], explanations[x])
 		#print(help_msg)
 		await ctx.send(help_msg)
+
+	
+	@commands.command()
+	async def cheer(self, ctx):	
+		"""
+		Randomly selects positive messages from a list an sends it to the server chat. 
+
+		PARAMS
+		ctx: Client wrapper object
+		"""
+		cheerymessage = ["You got this!", "Good job!", "Keep it up!", "You can accomplish all your goals", "If you put your mind to something, you can do it", "You're doing the best you can"]
+		await ctx.send(random.choice(cheerymessage))
 
 
 def setup(client):
