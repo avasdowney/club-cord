@@ -36,6 +36,19 @@ class Reminders(commands.Cog):
 			db.rollback()
 				
 		db.close()
+
+	
+	@commands.command()
+	async def view_reminders(self, ctx):
+	
+		db = sqlite3.connect("data/reminders.db")
+		query = "SELECT * FROM reminder;"
+		
+		try:
+			cur = db.cursor()
+			cur.execute(query)
+			
+		
 	
 
 		
