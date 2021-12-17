@@ -7,7 +7,6 @@ Useful metrics we could add to the stats wrapper
 2. Number of members offline/online (Seperate counts)
 	* Use 0 to represent offline, 1 to represent online
 
-
 # Audit logging
 Mine audit logging data (View Later)
 1. Create a general report for audit logs (Done)
@@ -16,6 +15,9 @@ Mine audit logging data (View Later)
 4. Filter audit logs by username/member
 
 # New Members
+Automate activities when new members join the server.
+
+
 Visualize server growth with filtered time frames. 
 1. View new members that have joined on a weekly, monthly and yearly basis. 
 2. Figure out how to get the join date of all the members
@@ -35,9 +37,16 @@ Service for scheduling meetings/events.
 **Occurrence Time**: (Weekly, BI-Weekly, Monthly)
 **User**: User that created the reminder
 
-
+# Features
 1. Create/Read/Update/Delete reminder model
-2. Send message reminder 4 HR's before meeting
-3. Store all info in a sqlite3 database
-4. Have a function that checks the DB everyday and see if a meeting is occuring the day before
+2. Reminders are stored in a sqlite3 database with the model above
+
+## How the "Reminding" will happen
+1. Get the current date and time
+	* Go through reminders db and check if the day matches 
+	* Send message to the entire server about the "meeting"
+	
+Run this task every day at 8AM
+
+
 
