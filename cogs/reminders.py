@@ -77,18 +77,11 @@ class Reminders(commands.Cog):
 			cur = db.cursor()
 			cur.execute(query, (reminder_id))
 			db.commit()
-			await ctx.send("Reminder deleted {reminder_id} ")
+			await ctx.send("Reminder deleted {} ".format(reminder_id))
 		except Exception as e:
 			print("Error deleting reminder: {}".format(e))
 	
 		
-		
-			
-		
-	
-
-		
-	
 
 
 def setup(client):
