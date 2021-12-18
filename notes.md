@@ -11,6 +11,7 @@ Service for scheduling meetings/events.
 ## Data model for message
 **Reminder ID**: ID of the reminder associated with it
 **Message Text**: Message that will be sent for the reminder
+**Role**: Tag the role that the message should be sent to
 
 # Features
 1. Create/Read/Update/Delete reminder model
@@ -26,8 +27,18 @@ Service for scheduling meetings/events.
 
 # Port Scanner
 Scan web/server hosts and identify open ports
+# Features
+1. Scan host with parameters for port ranges
+2. Create "queued" scans
+	* Allow multiple scans to happen (Not at the same time)
+	* Store each search in a "queue" node and perform the scans in order
+3. Create a function to priortize queue's that will take less time to perform a scan
+	* Can use the port ranges as an indicator for how long the search will take
+	* Prioritize smaller port ranges Ex. (1, 10), (1, 255), (1, 65535)
 
 # Audit log miner
+Service for dealing with audit log data
+# Features
 1. Create a general report for audit logs (Done)
 2. Filter audit logs by action, date, time and username
 3. For each user, show the audit log actions they've done
@@ -45,20 +56,21 @@ Scan web/server hosts and identify open ports
 9. Log name changing actions
 	* Use this to see if everyone changed their name to first and last
 
+# Channels Service
+Service to deal with channels
 
-# New Members
-Automate activities when new members join the server.
-Visualize server growth with filtered time frames. 
-1. View new members that have joined on a weekly, monthly and yearly basis. 
-2. Figure out how to get the join date of all the members
-
-# Channels
-Stats related to channels
-1. Use simple text summarization technique from NLTK to get specific keywords in the channel
-2. Get members that talk the most in that channel
-
-# Reminder Service
-
-
-
-
+# Features
+1. Create a channel activity report that shows which channels are most active
+	* Calculate activity using datetime timeframe
+2. Create bar chart for amount of messages sent by users in a channel
+3. Sort users by most messages sent with channel ID as parameter
+4. For each user, show/reccomend which channels they are most active in
+5. For each channel, perform some NLP algorithms 
+	* Text classification
+	* Extracting information from text
+	* Analyze sentence structure
+	* Building feature based grammars
+		- Understand meaning of sentences
+		- Manage linguistic data
+	* Build knowledge graphs
+	* Entity recognition
