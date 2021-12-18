@@ -82,21 +82,49 @@ class Reminders(commands.Cog):
 			print("Error deleting reminder: {}".format(e))
 
 	
-	@commands.command()
-	async def check_db(self, ctx):
-		
-		db = sqlite3.connect("data/reminders.db")		
-		query = "SELECT * FROM reminder;"
-	
-		try:
-			cur = db.cursor()
-			cur.execute(query)
-			for i in cur:
-				print("Current weekday: {} ".format(datetime.today().weekday()))
-				print("Current Time: {} ".format())
-				print(i[0], i[2])
-		except Exception as e:
-			print(e)
+	async def check_db(self):
+
+        db = sqlite3.connect("data/reminders.db")
+        query = "SELECT * FROM reminder;"
+
+        now = datetime.now()
+        today = date.today()
+        current_time = now.strftime("%H:%M:%S")
+        week_day = calendar.day_name[today.weekday()]
+
+        print("Current time: {} ".format(current_time))
+        print("Weekday: {} ".format(week_day))
+
+        try:
+            cur = db.cursor()
+            cur.execute(query)
+            for i in cur:
+                # Check if today matches weekday in db
+                if week_day == i[2]:
+                    await self.client.send_message("Test?")
+        except Exception as e:
+            print("Error checking db: {}".format(e))
+
+
+    @commands.command()
+    async def schedule_db(self, ctx):
+
+        schedule.every().day.at("08:00:00").do(self.check_db)
+        await ctx.send("Schedule DB Check: ")
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
+
+    # prototype function for testing on shorter intervals
+    @commands.command()
+    async def schedule_test(self, ctx):
+
+        schedule.every().minute.at(":17").do(check_db)
+        await ctx.send("Schedule DB Check: ")
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
 	
 		
 
