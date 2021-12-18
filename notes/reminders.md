@@ -21,13 +21,32 @@ Service for scheduling meetings/events.
 | **Role**         | Tag the role the reminder should be sent to |
 
 # Features
-1. Create/Read/Update/Delete reminder model
-2. Reminders are stored in a sqlite3 database with the model above
-3. Check the database every day to see if a reminder matches the current day
-	* Send the message at 8 AM
-	* Run this task every day at 8AM
-4. Attach a message for a reminder in the database
-	* This is the reminder message that will be sent before the meeting
-5. Add users/roles/channels to a reminder
-	* Should notify users/roles/channels associated with the reminder
-5. Check reactions to a reminder message
+
+
+## Help function
+1. Send a help message that shows how to use all the commands in the service
+
+## Create reminder
+1. Create reminder using the data model above. All the fields are required
+2. Store reminder (with model) in sqlite3 database
+3. Alert user when the reminder is created
+4. Alert user if the reminder creation failed
+
+## Delete reminder
+1. Specify reminder id and delete the object
+2. Delete the reminder from the database
+3. Alert user if reminder delete was successful or not
+
+## Update reminder
+1. Specify reminder id that we want to update
+2. Specify fields that we want to change
+3. Commit changes to the database
+
+## Attach Message
+1. Create message model for DB. Link reminder ID to message model
+2. Attach message to reminder using reminder id as parameter
+3. Create message using message data model above
+4. Attach role to message (Role will contain the users that the message will be sent to)
+5. Commit changes to the database
+
+
