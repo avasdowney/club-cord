@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from datetime import datetime
 import json
 import sqlite3
 
@@ -79,6 +80,23 @@ class Reminders(commands.Cog):
 			await ctx.send("Reminder deleted {} ".format(reminder_id))
 		except Exception as e:
 			print("Error deleting reminder: {}".format(e))
+
+	
+	@commands.command()
+	async def check_db(self, ctx):
+		
+		db = sqlite3.connect("data/reminders.db")		
+		query = "SELECT * FROM reminder;"
+	
+		try:
+			cur = db.cursor()
+			cur.execute(query)
+			for i in cur:
+				print("Current weekday: {} ".format(datetime.today().weekday()))
+				print("Current Time: {} ".format())
+				print(i[0], i[2])
+		except Exception as e:
+			print(e)
 	
 		
 
