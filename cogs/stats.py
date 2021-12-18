@@ -185,7 +185,7 @@ class Stats(commands.Cog):
 		
 		
 	@commands.command()
-	async def help_test(self, ctx):
+	async def clubcord_help(self, ctx):
 		"""
 		Reads the README from the github repo and displays it as a message in the discord server. 
 		
@@ -196,19 +196,18 @@ class Stats(commands.Cog):
 		with open('README.md', 'r') as f:
 			text = f.read()
 			html = markdown.markdown(text)
-		soup = BeautifulSoup(html, "html")
+		soup = BeautifulSoup(html, "html.parser")
 
 		# retrieve useful info
 		readme = soup.find_all('p')
-		readme = (str)(readme.pop(1)) 
-		commands = readme.split('|')[7:][::3] # what is this wizardry?
+		readme = (str)(readme.pop(7)) # this will need to be changed if more gets added to readme above the table
+		commands = readme.split('|')[7:][::3] # what is this wizardry? <-- it chops off the first 7 and last three cells of the readme table
 		commands = [i.replace('<code>', '**').replace('</code>', '**').strip() for i in commands]
 		explanations = readme.split('|')[8:][::3]
 		explanations = [i.strip() for i in explanations]
 
 		# return message in discord chat
 		indices = len(commands)
-		help_msg = ''
 		for x in range(indices):
 			help_msg = help_msg + '{}: {}\n'.format(commands[x], explanations[x])
 		#print(help_msg)

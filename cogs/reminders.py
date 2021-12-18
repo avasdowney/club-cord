@@ -1,4 +1,3 @@
-from table2ascii import table2ascii 
 import discord
 from discord.ext import commands
 import json

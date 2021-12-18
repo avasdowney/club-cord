@@ -1,3 +1,5 @@
 discord
 markdown
 beautifulsoup4
+matplotlib
+numpy
