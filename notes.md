@@ -2,16 +2,22 @@
 Service for scheduling meetings/events. 
 
 ## Data Model for Reminder
-**Name**: Name of meeting/event
-**Time**: Time that the meeting starts
-**Duration**: How long the meeting will be
-**Occurrence Time**: (Weekly, BI-Weekly, Monthly)
-**User**: User that created the reminder
+
+| Field          | Description                              |
+|----------------|------------------------------------------|
+| **Name**       | Name of meeting/event                    |
+| **Time**       | Time the meeting starts                  |
+| **Duration**   | How long the meeting will be             |
+| **Occurrence** | Choice of occurring Weekly/Daily/Monthly |
+| **Username**   | User that created the meeting reminder.  |
 
 ## Data model for message
-**Reminder ID**: ID of the reminder associated with it
-**Message Text**: Message that will be sent for the reminder
-**Role**: Tag the role that the message should be sent to
+
+| Field            | Description                                 |
+|------------------|---------------------------------------------|
+| **Reminder ID**  | Name of meeting/event                       |
+| **Message Text** | Time the meeting starts                     |
+| **Role**         | Tag the role the reminder should be sent to |
 
 # Features
 1. Create/Read/Update/Delete reminder model
