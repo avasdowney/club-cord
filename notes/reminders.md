@@ -32,6 +32,9 @@ Service for scheduling meetings/events.
 3. Alert user when the reminder is created
 4. Alert user if the reminder creation failed
 
+## View reminder
+1. Send back reminders from db in chat
+
 ## Delete reminder
 1. Specify reminder id and delete the object
 2. Delete the reminder from the database
@@ -49,4 +52,5 @@ Service for scheduling meetings/events.
 4. Attach role to message (Role will contain the users that the message will be sent to)
 5. Commit changes to the database
 
-
+## View reminder message
+1. Pass in reminder id and send message back to user

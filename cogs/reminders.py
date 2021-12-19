@@ -1,8 +1,12 @@
 import discord
-from discord.ext import commands
-from datetime import datetime
+from discord.ext import commands, tasks
+from datetime import datetime, time, timedelta, date
+import calendar
 import json
 import sqlite3
+import asyncio
+import threading
+import time
 
 class Reminders(commands.Cog):
 	
@@ -41,6 +45,33 @@ class Reminders(commands.Cog):
 
 	
 	@commands.command()
+	async def attach_message(self, ctx, reminder_id, message, roles):
+	
+		db = sqlite3.connect("data/reminders.db")
+		query = "INSERT INTO message (reminder_id, message, roles) values(?,?,?);"
+
+		values = (
+			reminder_id,
+			message, 
+			roles
+		)
+	
+		try:
+			cur = db.cursor()
+			cur.execute(query, values)
+			db.commit()
+			print("Added message to reminder: ")	
+			await ctx.send("Added message to reminder {}: ".format(reminder_id))
+	
+		except Exception as e:
+			print("Error in create operation: {} ".format(e))
+			db.rollback()
+	
+		db.close()
+		
+
+	
+	@commands.command()
 	async def view_reminders(self, ctx):
 	
 		db = sqlite3.connect("data/reminders.db")
@@ -68,6 +99,27 @@ class Reminders(commands.Cog):
 
 	
 	@commands.command()
+	async def view_reminder_message(self, ctx, reminder_id):
+	
+		db = sqlite3.connect("data/reminders.db")
+		query = "SELECT * FROM message where reminder_id=?;"
+	
+		try:
+			cur = db.cursor()
+			cur.execute(query, (reminder_id))
+			value = cur.fetchone()
+
+			msg = "**MESSAGE REMINDER:**@{}\n\n".format(value[3])
+			data = "MESSAGE:  *{}* \n\n".format(value[2])
+			msg += data
+			await ctx.send(msg)
+
+		except Exception as e:
+			print("Error viewing reminders: {} ".format(e))
+
+
+	
+	@commands.command()
 	async def delete_reminders(self, ctx, reminder_id):
 	
 		db = sqlite3.connect("data/reminders.db")
@@ -80,53 +132,49 @@ class Reminders(commands.Cog):
 			await ctx.send("Reminder deleted {} ".format(reminder_id))
 		except Exception as e:
 			print("Error deleting reminder: {}".format(e))
-
 	
-	async def check_db(self):
 
-        db = sqlite3.connect("data/reminders.db")
-        query = "SELECT * FROM reminder;"
+	# Task to check the DB for reminders
+	async def check_db(self, ctx):
 
-        now = datetime.now()
-        today = date.today()
-        current_time = now.strftime("%H:%M:%S")
-        week_day = calendar.day_name[today.weekday()]
+		while True:
+			db = sqlite3.connect("data/reminders.db")
+			query = "SELECT * FROM reminder;"
 
-        print("Current time: {} ".format(current_time))
-        print("Weekday: {} ".format(week_day))
+			now = datetime.now()
+			today = date.today()
+			current_time = now.strftime("%H:%M:%S")
+			week_day = calendar.day_name[today.weekday()]
 
-        try:
-            cur = db.cursor()
-            cur.execute(query)
-            for i in cur:
-                # Check if today matches weekday in db
-                if week_day == i[2]:
-                    await self.client.send_message("Test?")
-        except Exception as e:
-            print("Error checking db: {}".format(e))
+			print("Current time: {} ".format(current_time))
+			print("Weekday: {} ".format(week_day))
+
+			try:
+				cur = db.cursor()
+				cur.execute(query)
+				for i in cur:
+					# Check if today matches weekday in db
+					if week_day != i[2]:
+						# send reminder message			
+						reminder_query = "SELECT * FROM message where reminder_id=?;"
+						second_cur = db.cursor()
+						second_cur.execute(query, (reminder_id))
+						for j in second_cur:
+							await ctx.send((j[1]))
+			except Exception as e:
+				print("Error checking db: {}".format(e))
+
+			db.close()
+			await asyncio.sleep(10)
 
 
-    @commands.command()
-    async def schedule_db(self, ctx):
-
-        schedule.every().day.at("08:00:00").do(self.check_db)
-        await ctx.send("Schedule DB Check: ")
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
-
-
-    # prototype function for testing on shorter intervals
-    @commands.command()
-    async def schedule_test(self, ctx):
-
-        schedule.every().minute.at(":17").do(check_db)
-        await ctx.send("Schedule DB Check: ")
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
+	@commands.command()
+	async def schedule_db(self, ctx):
 	
-		
+		# start task
+		self.client.loop.create_task(self.check_db(ctx))
+	
+		await ctx.send("Scheduled task: ")
 
 
 def setup(client):

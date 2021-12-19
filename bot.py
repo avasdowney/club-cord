@@ -11,7 +11,7 @@ import sys
 # intents needs to be set to true for bot to view ALL users. 
 intents = discord.Intents.default()
 intents.members = True
-client = commands.Bot(command_prefix="$", intents=intents)
+client = commands.Bot(command_prefix="!", intents=intents)
 
 @client.command()
 async def load(ctx, extension):
