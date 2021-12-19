@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 from pprint import pprint
 import datetime
-
+import asyncio
 
 class AuditLogs(commands.Cog):
 
@@ -20,45 +20,31 @@ class AuditLogs(commands.Cog):
 	async def on_ready(self):
 		print("Audit Log service is online ")
 
-	@commands.command()
-	async def filter_log_by_user(self, ctx, username, log_limit):
+	def load_log(self, username, target, action):
 		
-		result_dict = {}
-		result_dict[username] = []
-
-		for server in self.client.guilds:
-			async for entry in server.audit_logs(limit=int(log_limit)):
-				if username in str(entry.user.name):
-
-					data_obj = {}
-					data_obj["username"] = str(entry.user.name)
-					data_obj["target"] = str(entry.target)	
-					data_obj["action"] = str(entry.action)
-					result_dict[username].append(data_obj)
-
-		pprint(result_dict)
-
-
-	@commands.command()
-	async def filter_log_by_action(self, ctx, log_action, log_limit):
-		
-		result_dict = {}
-		action_filter = "AuditLogAction.{}".format(log_action)
-		result_dict[action_filter] = []
-
-		for server in self.client.guilds:
-			async for entry in server.audit_logs(limit=int(log_limit)):
-				if action_filter in str(entry.action):
-
-					data_obj = {}
-					data_obj["username"] = str(entry.user.name)
-					data_obj["target"] = str(entry.target)
-					data_obj["action"] = str(entry.action)
-					result_dict[action_filter].append(data_obj)
-
-		pprint(result_dict)
-
+		data_obj = {}
+		data_obj["username"] = str(username)
+		data_obj["target"] = str(target)	
+		data_obj["action"] = str(action)
 	
+		return data_obj
+
+
+	def load_audit_log_message(result_dict, val1, val2):
+
+		count = 0	
+		msg = "AUDIT LOG REPORT for {} LIMIT {} \n\n".format(val1, val2)
+		for item in result_dict:
+			if count < 15:
+				msg += "__{}__  : **{}** \n".format(item, result_dict[item])
+			else:
+				break
+
+			count += 1
+
+		return msg
+		
+		
 	@commands.command()
 	async def audit_log_report_user(self, ctx, username, log_limit):
 		
@@ -76,12 +62,33 @@ class AuditLogs(commands.Cog):
 					else:
 						action_count[str(entry.action)] += 1
 
-				
-		msg = "AUDIT LOG REPORT for {} LIMIT {} \n\n".format(username, log_limit)
-		for item in action_count:
-			msg += "__{}__  : **{}** \n".format(item, action_count[item])
+						
+		audit_msg = self.load_audit_log_message(result_dict, username, log_limit)
+		await ctx.send(audit_msg)
 
-		await ctx.send(msg)
+	
+	@commands.command()
+	async def audit_log_report_action_users(self, ctx, log_action, log_limit):
+		
+		result_dict = {}
+		action_filter = "AuditLogAction.{}".format(log_action)
+		result_dict = {}
+	
+		for server in self.client.guilds:
+			async for entry in server.audit_logs(limit=int(log_limit)):	
+				if action_filter in str(entry.action):	
+					key = str(entry.user.name)
+					user_filter = key in result_dict.keys()
+				
+					if user_filter:
+						result_dict[key] += 1
+					else:
+						result_dict[key] = 1
+
+		
+		audit_msg = self.load_audit_log_message(result_dict, log_action, log_limit)
+		await ctx.send(audit_msg)
+
 		
 
 	@commands.command()

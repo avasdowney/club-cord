@@ -11,11 +11,8 @@ import random
 
 class Helpers(commands.Cog):
 	"""
-	Stats service: 
-		Service for getting details about users, channels, messages or any discord server related details. 
-		View graphs/data visualizations related to server data
-
-	So discord doesn't let us collect any message data/when it was sent, so we can't really do any stats RIP
+	Helper service:
+		Main help meny for bot. Functions to show how each service works 
 	"""
 
 	def __init__(self, client):
@@ -30,9 +27,6 @@ class Helpers(commands.Cog):
 	async def clubcord_help(self, ctx):
 		"""
 		Reads the README from the github repo and displays it as a message in the discord server. 
-
-		@Ava if ur still waiting on Reddit, if you could create a helper function for each service. 
-		Thad be dope. We basically need a help page for each service (Audit Logs, Channels, Reminders) 
 		
 		PARAMS
 		ctx: Client wrapper object
