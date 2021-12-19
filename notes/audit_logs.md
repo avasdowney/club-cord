@@ -3,7 +3,6 @@ Service for dealing with audit log data
 
 # Features
 1. Create a general report for audit logs (Done)
-2. Filter audit logs by action, date, time and username
 3. For each user, show the audit log actions they've done
 	* Do UNIQUE ORDER BY query and get counts for each action
 4. Create a report that sorts users by the amount of times they've done a certain action
