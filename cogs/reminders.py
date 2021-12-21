@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands, tasks
 from datetime import datetime, time, timedelta, date
+from termcolor import colored
 import calendar
 import json
 import sqlite3
@@ -15,7 +16,9 @@ class Reminders(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_ready(self):
-		print("Reminders service is online... ")
+		print(colored("[+]", "green"), colored("Reminders online ", "yellow"))
+
+		
 
 	@commands.command()
 	async def create_reminder(self, ctx, title, day, m_time, occurrence, duration):
@@ -69,7 +72,6 @@ class Reminders(commands.Cog):
 	
 		db.close()
 		
-
 	
 	@commands.command()
 	async def view_reminders(self, ctx):
@@ -120,7 +122,7 @@ class Reminders(commands.Cog):
 
 	
 	@commands.command()
-	async def delete_reminders(self, ctx, reminder_id):
+	async def delete_reminder(self, ctx, reminder_id):
 	
 		db = sqlite3.connect("data/reminders.db")
 		query = "DELETE FROM reminder where id=?;"

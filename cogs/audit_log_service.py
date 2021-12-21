@@ -1,9 +1,13 @@
-
+import bcolors
 import discord
 from discord.ext import commands
+from termcolor import colored
 from pprint import pprint
 import datetime
 import asyncio
+
+
+
 
 class AuditLogs(commands.Cog):
 
@@ -18,7 +22,7 @@ class AuditLogs(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_ready(self):
-		print("Audit Log service is online ")
+		print(colored("[+]", "green"), colored("Audit logging online ", "yellow"))
 
 	def load_log(self, username, target, action):
 		
@@ -89,7 +93,6 @@ class AuditLogs(commands.Cog):
 		audit_msg = self.load_audit_log_message(result_dict, log_action, log_limit)
 		await ctx.send(audit_msg)
 
-		
 
 	@commands.command()
 	async def audit_log_report(self, ctx):

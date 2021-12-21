@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import matplotlib.pyplot as plt
 from pprint import pprint
+from termcolor import colored
 import numpy as np
 import datetime
 import random
@@ -20,7 +21,7 @@ class Channels(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_ready(self):
-		print("Channels service is online ")
+		print(colored("[+]", "green"), colored("Channels online ", "yellow"))
 
 	
 	@commands.command()

@@ -3,3 +3,5 @@ markdown
 beautifulsoup4
 matplotlib
 numpy
+bcolors
+termcolors

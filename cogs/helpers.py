@@ -3,6 +3,7 @@ from discord.ext import commands
 import markdown
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
+from termcolor import colored
 from pprint import pprint
 import numpy as np
 import datetime
@@ -21,7 +22,24 @@ class Helpers(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_ready(self):
-		print("Helper service is online ")
+		print(colored("[+]", "green"), colored("Helpers online ", "yellow"))
+
+	
+	@commands.command()
+	async def reminders_help(self, ctx):
+		await ctx.send("Reminders help ")
+
+	@commands.command()
+	async def portscanner_help(self, ctx):
+		await ctx.send("Port Scanner help ")
+	
+	@commands.command()
+	async def channels_help(self, ctx):
+		await ctx.send("Port Scanner help ")
+	
+	@commands.command()
+	async def auditlog_help(self, ctx):
+		await ctx.send("Port Scanner help ")
 	
 	@commands.command()
 	async def clubcord_help(self, ctx):

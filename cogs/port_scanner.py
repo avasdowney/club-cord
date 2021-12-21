@@ -1,19 +1,30 @@
 import discord
-from discord.ext import commands
-import socket
+from discord.ext import commands, tasks
 from datetime import datetime
+from pprint import pprint
+from termcolor import colored
+import socket
 import sys
+import queue
 
 class PortScanner(commands.Cog):
 	
 	def __init__(self, client):
 		self.client = client
+		self.q = queue.Queue()
 
-	
 	@commands.Cog.listener()
 	async def on_ready(self):
-		print("Port scanning service is online... ")
+		print(colored("[+]", "green"), colored("Port Scanner online ", "yellow"))
 
+	# creates a scanner object
+	def create_scan(self, username, hostname, startPort, endPort):
+		scan_obj = {}
+		scan_obj["username"] = username
+		scan_obj["hostname"] = hostname
+		scan_obj["start_port"] = int(startPort) # convert
+		scan_obj["end_port"] = int(endPort)
+		return scan_obj
 	
 	def scanHost(self, ip, startPort, endPort):
 		""" Starts a TCP scan on a given IP address """
@@ -49,13 +60,38 @@ class PortScanner(commands.Cog):
 				pass
 
 		return msg
-	
+
+	@commands.command()
+	async def run_scans(self, ctx):
+		# goes through and runs all scans in queue
+		for scan in list(self.q.queue):
+			socket.setdefaulttimeout(0.01)
+			result_msg = self.scanHost(
+				scan["hostname"],
+				scan["start_port"], 
+				scan["end_port"]
+			)
+
+			await ctx.send(result_msg)
+		
+
+	@commands.command()
+	async def view_scans(self,ctx):
+		print("Viewing scans .... ")
+		for scan in list(self.q.queue):
+			pprint(scan)
+
 	
 	@commands.command()
-	async def port_scan(self,ctx, hostname: str, startPort, endPort):
-		socket.setdefaulttimeout(0.01)
-		results = self.scanHost(hostname, int(startPort), int(endPort))
-		await ctx.send(results)
+	async def port_scan(self, ctx, hostname, startPort, endPort):
+
+		scan_obj = self.create_scan("testing", hostname, startPort, endPort)
+		# add scan to queue
+		self.q.put(scan_obj)
+
+		msg = "Added scan to queue, results will be sent back once scan is done... "
+		await ctx.send(msg)
+		
 
 def setup(client):
 	client.add_cog(PortScanner(client))
