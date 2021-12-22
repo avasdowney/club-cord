@@ -2,10 +2,8 @@
 CREATE TABLE reminder (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	title TEXT NOT NULL,
-	day TEXT NOT NULL, 
-	time TEXT NOT NULL,
-	duration TEXT NOT NULL,
-	occurrence TEXT NOT NULL
+	date_value TEXT NOT NULL, 
+	duration TEXT NOT NULL
 );
 
 

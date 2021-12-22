@@ -13,24 +13,37 @@ class Reminders(commands.Cog):
 	
 	def __init__(self, client):
 		self.client = client
+		# start the scheduler routine
+		self.scheduler().start()
 	
 	@commands.Cog.listener()
 	async def on_ready(self):
 		print(colored("[+]", "green"), colored("Reminders online ", "yellow"))
 
-		
-
-	@commands.command()
-	async def create_reminder(self, ctx, title, day, m_time, occurrence, duration):
 	
+	def to_date_val(self, date_string):
+		date_s = date_string.split(":")	
+		db_date = datetime (
+			int(date_s[0]), 
+			int(date_s[1]), 
+			int(date_s[2]), 
+			int(date_s[3]),
+			int(date_s[4])
+		)
+		return db_date
+
+		
+	@commands.command()
+	async def create_reminder(self, ctx, title, date_value, duration):
+
+		# convert date time format
+
 		db = sqlite3.connect("data/reminders.db")
-		query = "INSERT INTO reminder (title, day, time, duration, occurrence) values(?,?,?,?,?);"
+		query = "INSERT INTO reminder (title, date_value, duration) values(?,?,?);"
 
 		values = (
 			title,
-			day, 
-			m_time,
-			occurrence,
+			date_value, 
 			duration
 		)
 
@@ -38,7 +51,6 @@ class Reminders(commands.Cog):
 			cur = db.cursor()
 			cur.execute(query, values)
 			db.commit()
-			print("Added reminder to database: ")
 			await ctx.send("Added reminder to database: ")
 		except Exception as e:
 			print("Error in create operation: {} ".format(e))
@@ -72,6 +84,8 @@ class Reminders(commands.Cog):
 	
 		db.close()
 		
+
+
 	
 	@commands.command()
 	async def view_reminders(self, ctx):
@@ -85,12 +99,10 @@ class Reminders(commands.Cog):
 			cur.execute(query)
 			for i in cur:
 				r_id = i[0]
-				name = i[1]
-				day = i[2]
-				r_time = i[3] 
-				occurrence = i[4]
-				duration = i[5]
-				values = f" **{r_id}** :  {name} : {day} : {r_time} : {occurrence} : {duration} \n"
+				title = i[1]
+				date_value = i[2]
+				duration = i[3] 
+				values = f" **{r_id}** :  {title} : {date_value} : {duration} \n"
 				msg += values
 				
 		except Exception as e:
@@ -98,7 +110,6 @@ class Reminders(commands.Cog):
 
 
 		await ctx.send(msg)
-
 	
 	@commands.command()
 	async def view_reminder_message(self, ctx, reminder_id):
@@ -112,7 +123,7 @@ class Reminders(commands.Cog):
 			value = cur.fetchone()
 
 			msg = "**MESSAGE REMINDER:**@{}\n\n".format(value[3])
-			data = "MESSAGE:  *{}* \n\n".format(value[2])
+			data = "**{}**\n\n".format(value[2])
 			msg += data
 			await ctx.send(msg)
 
@@ -134,49 +145,58 @@ class Reminders(commands.Cog):
 			await ctx.send("Reminder deleted {} ".format(reminder_id))
 		except Exception as e:
 			print("Error deleting reminder: {}".format(e))
+
 	
+	def get_reminder_message(self, reminder_id):
 
-	# Task to check the DB for reminders
-	async def check_db(self, ctx):
-
-		while True:
-			db = sqlite3.connect("data/reminders.db")
-			query = "SELECT * FROM reminder;"
-
-			now = datetime.now()
-			today = date.today()
-			current_time = now.strftime("%H:%M:%S")
-			week_day = calendar.day_name[today.weekday()]
-
-			print("Current time: {} ".format(current_time))
-			print("Weekday: {} ".format(week_day))
-
-			try:
-				cur = db.cursor()
-				cur.execute(query)
-				for i in cur:
-					# Check if today matches weekday in db
-					if week_day != i[2]:
-						# send reminder message			
-						reminder_query = "SELECT * FROM message where reminder_id=?;"
-						second_cur = db.cursor()
-						second_cur.execute(query, (reminder_id))
-						for j in second_cur:
-							await ctx.send((j[1]))
-			except Exception as e:
-				print("Error checking db: {}".format(e))
-
-			db.close()
-			await asyncio.sleep(10)
-
-
-	@commands.command()
-	async def schedule_db(self, ctx):
+		msg = ""		
+		db = sqlite3.connect("data/reminders.db")
+		query = "SELECT * FROM message where reminder_id=?;"
 	
-		# start task
-		self.client.loop.create_task(self.check_db(ctx))
+		try:
+			cur = db.cursor()
+			cur.execute(query, (reminder_id,))
+			value = cur.fetchone()
+			# build message template
+			msg = "**MESSAGE REMINDER:**@{}\n\n".format(value[3])
+			data = "**{}**\n\n".format(value[2])
+			msg += data
+
+		except Exception as e:
+			print("Error viewing reminders: {} ".format(e))
+
+		return msg
+
+
+	@tasks.loop(seconds=10.0)
+	async def scheduler(self, ctx):
 	
-		await ctx.send("Scheduled task: ")
+		db = sqlite3.connect("data/reminders.db")
+		query = "SELECT * FROM reminder;"
+		curr_time = datetime.now()
+
+		try:
+			cur = db.cursor()
+			cur.execute(query)
+			print("Current time: ", curr_time)
+			for item in cur:
+				test = self.get_reminder_message(item[0])
+				# reminder message for each object
+				# get time delta difference
+				db_date = self.to_date_val(item[2])
+				time_delta = curr_time-db_date
+				print("Date in DB: " , db_date)
+				print("Time delta: ", time_delta)
+				# if time difference is less than 6 hours, send reminder
+				if time_delta < timedelta(0,0,0,0,0,8):
+					await ctx.send(test)
+					
+
+	
+		except Exception as e:
+			print("Something went wrong: {} ".format(e))
+
+
 
 
 def setup(client):
